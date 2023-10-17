@@ -73,6 +73,24 @@
           ],
           cart: [],
         },
+         methods: {
+          addToCart(lesson) {
+            if (this.cart.length == 0) {
+              this.cart.push(lesson);
+            } else {
+              for (let i = 0; i < this.cart.length; i++) {
+                if (this.cart[i].id == lesson.id) {
+                //   this.cart[i].spaces++;
+                  console.log(this.cart[i].id);
+                  console.log(this.cart[i].spaces);
+                }else{
+                console.log("this is nothing");
+                }
+              }
+            }
+            --lesson.spaces;
+          },
+        },
       });
     </script>
   </body>
