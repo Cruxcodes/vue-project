@@ -1,11 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <div id="app">
+      <div v-show="showDiv">This div tag can be hidden</div>
+      <p>{{message}}</p>
+
+      <div>
+        <p>{{cart.length}}</p>
+      </div>
+      <div class="activities">
+        <div v-for="x in afterSchoolActivity">
+          <p>Subject: {{x.subject}}</p>
+          <p>Location: {{x.location}}</p>
+          <p>Price: £ {{x.price}}</p>
+          <p>Spaces: {{x.spaces}}</p>
+          <button v-show="x.spaces > 0" v-on:click="addToCart(x)">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello Vue!",
+          showDiv: false,
+          showButton: true,
+          afterSchoolActivity: [
+            {
+              id: 1,
+              subject: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+            },
+            {
+              id: 2,
+              subject: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+            },
+            {
+              id: 3,
+              subject: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+            },
+            {
+              id: 4,
+              subject: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+            },
+            {
+              id: 5,
+              subject: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+            },
+          ],
+          cart: [],
+        },
+      });
+    </script>
+  </body>
 </html>
