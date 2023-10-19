@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body>
     <div id="app">
       <div v-show="showDiv">This div tag can be hidden</div>
       <p>{{message}}</p>
 
+      <button>Sort by Location</button>
       <div>
         <p>{{cart.length}}</p>
       </div>
@@ -19,15 +21,33 @@
           <p>Location: {{x.location}}</p>
           <p>Price: £ {{x.price}}</p>
           <p>Spaces: {{x.spaces}}</p>
-          <button v-show="x.spaces > 0" v-on:click="addToCart(x)">
+          <!-- v-show="x.spaces > 0"  -->
+          <button
+            v-bind:disabled="x.spaces <= 0"
+            v-on:click="addToCart(x,true)"
+          >
             Add to Cart
           </button>
+        </div>
+      </div>
+
+      <h2>This is the cart section</h2>
+
+      <div class="activities">
+        <div v-for="x in cart">
+          <p>Subject: {{x.subject}}</p>
+          <p>Location: {{x.location}}</p>
+          <p>Price: £ {{x.price}}</p>
+          <p>Booked Slots: {{x.availableSpace}}</p>
+          <button v-on:click="removeFromCart(x)">Remove from Cart</button>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- <script src="./data/lessons.js"></script> -->
     <script>
+      // import afterSchoolActivity from './data/lessons.js'
       const app = new Vue({
         el: "#app",
         data: {
@@ -41,54 +61,117 @@
               location: "London",
               price: 100,
               spaces: 5,
+              availableSpace: 0,
             },
             {
               id: 2,
-              subject: "Maths",
+              subject: "English",
               location: "London",
               price: 100,
               spaces: 5,
+              availableSpace: 0,
             },
             {
               id: 3,
-              subject: "Maths",
+              subject: "Physics",
               location: "London",
               price: 100,
               spaces: 5,
+              availableSpace: 0,
             },
             {
               id: 4,
-              subject: "Maths",
+              subject: "Geography",
               location: "London",
               price: 100,
               spaces: 5,
+              availableSpace: 0,
             },
             {
               id: 5,
-              subject: "Maths",
+              subject: "Orange",
               location: "London",
               price: 100,
               spaces: 5,
+              availableSpace: 0,
             },
           ],
+          // sortedProducts: this.afterSchoolActivity.sort((p1, p2) =>
+          //   p1.price < p2.price ? 1 : p1.price > p2.price ? -1 : 0
+          // ),
           cart: [],
         },
-         methods: {
-          addToCart(lesson) {
-            if (this.cart.length == 0) {
-              this.cart.push(lesson);
+        methods: {
+          addToCart(lesson, type) {
+            // console.log(sortedProducts);
+            // if (this.cart.length == 0) {
+            //   this.cart.push(lesson);
+            //   // console.log("this is badd");
+            // } else {
+            //   for (let i = 0; i < this.cart.length; i++) {
+            //     // console.log(this.cart[i].id);
+            //     // if (i <= this.cart.length - 1) {
+            //     // console.log(this.cart.length);
+            //     if (this.cart[i].id == lesson.id) {
+            //       //   this.cart[i].spaces++;
+            //       console.log("test " + this.cart[i].id);
+            //       // if (type) {
+            //       //   this.cart[i].spaces++;
+            //       // }
+            //       ++this.cart[i].spaces;
+            //       break;
+
+            //       // console.log(lesson.id);
+            //       // console.log(this.cart[i].spaces);
+            //     } else {
+            //       // if it is not it still adds this to the instances where it isn't correct
+            //       this.cart.push(lesson);
+            //     }
+            //     // }
+            //     // continue;
+
+            //   }
+            // this.cart.map((element, index) => {
+            //   if (element.id == lesson.id) {
+            //     console.log(lesson.id + " " + element.id);
+            //     console.log(element);
+            //     element.spaces += 1;
+            //   }
+            // });
+            // lesson.availableSpace++;
+
+            if (lesson.availableSpace > 0) {
+              lesson.availableSpace++;
             } else {
-              for (let i = 0; i < this.cart.length; i++) {
-                if (this.cart[i].id == lesson.id) {
-                //   this.cart[i].spaces++;
-                  console.log(this.cart[i].id);
-                  console.log(this.cart[i].spaces);
-                }else{
-                console.log("this is nothing");
-                }
-              }
+              lesson.availableSpace++;
+              this.cart.push(lesson);
             }
-            --lesson.spaces;
+            // lesson.availableSpace++;
+
+            lesson.spaces--;
+            // this.checkEntry();
+            // }
+            // if (type) {
+            //   // console.log(type);
+            //   --lesson.spaces;
+            // } else {
+            //   console.log("this is a test");
+            // }
+          },
+          // checkEntry(lesson){
+          //  return lesson.id == this.cart.
+          // }
+          removeFromCart(lesson) {
+            // if (lesson.availableSpace > 0) {
+            //   lesson.availableSpace++;
+            // } else {
+            //   lesson.availableSpace++;
+            //   this.cart.push(lesson);
+            // }
+            // lesson.availableSpace++;
+
+           
+            // lesson.spaces--;
           },
         },
       });
