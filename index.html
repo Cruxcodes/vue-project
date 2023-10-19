@@ -12,38 +12,41 @@
       <p>{{message}}</p>
 
       <!-- <button v-on:click="sortLessons()">Sort by Location</button> -->
-      <input
-        type="radio"
-        name="sort"
-        value="subject"
-        v-model="picked"
-        v-on:change="sortLessons(picked)"
-      />
-      Subject<br />
-      <input
-        type="radio"
-        name="sort"
-        value="location"
-        v-model="picked"
-        v-on:change="sortLessons(picked)"
-      />
-      Location<br />
-      <input
-        type="radio"
-        name="sort"
-        value="price"
-        v-model="picked"
-        v-on:change="sortLessons(picked)"
-      />
-      Price<br />
-      <input
-        type="radio"
-        name="sort"
-        value="spaces"
-        v-model="picked"
-        v-on:change="sortLessons(picked)"
-      />
-      Space Available
+      <div class="sortby">
+        <input
+          type="radio"
+          name="sort"
+          value="subject"
+          v-model="picked"
+          v-on:change="sortLessons(picked)"
+        />
+        Subject<br />
+        <input
+          type="radio"
+          name="sort"
+          value="location"
+          v-model="picked"
+          v-on:change="sortLessons(picked)"
+        />
+        Location<br />
+        <input
+          type="radio"
+          name="sort"
+          value="price"
+          v-model="picked"
+          v-on:change="sortLessons(picked)"
+        />
+        Price<br />
+        <input
+          type="radio"
+          name="sort"
+          value="spaces"
+          v-model="picked"
+          v-on:change="sortLessons(picked)"
+        />
+        Space Available
+      </div>
+
       <div>
         <p>{{cart.length}}</p>
       </div>
@@ -85,7 +88,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- <script src="./data/lessons.js"></script> -->
-    <script >
+    <script>
       // import afterSchoolActivity from './data/lessons.js
       // import json from './data/lessons.json';
       const app = new Vue({
@@ -125,17 +128,17 @@
             {
               id: 4,
               subject: "Geography",
-              location: "London",
-              price: 100,
+              location: "Birminghem",
+              price: 90,
               spaces: 5,
               availableSpace: 0,
             },
             {
               id: 5,
               subject: "Orange",
-              location: "London",
+              location: "Manchester",
               price: 100,
-              spaces: 5,
+              spaces: 4,
               availableSpace: 0,
             },
           ],
@@ -182,7 +185,7 @@
             //   }
             // });
             // lesson.availableSpace++;
-              // console.log(json)
+            // console.log(json)
             if (lesson.availableSpace > 0) {
               lesson.availableSpace++;
             } else {
@@ -229,13 +232,30 @@
           },
           sortLessons(selected) {
             console.log(selected);
-            switch(selected){
-              // case "subject":app
+            switch (selected) {
+              case "subject":
+                this.afterSchoolActivity = this.afterSchoolActivity.sort(
+                  (a, b) => a.subject.localeCompare(b.subject)
+                );
+                break;
+              case "location":
+                this.afterSchoolActivity = this.afterSchoolActivity.sort(
+                  (a, b) => a.location.localeCompare(b.location)
+                );
+                break;
+              case "price":
+                this.afterSchoolActivity = this.afterSchoolActivity.sort(
+                  (a, b) => parseFloat(a.price) - parseFloat(b.price)
+                );
+                break;
+              case "spaces":
+                console.log("his");
+                this.afterSchoolActivity = this.afterSchoolActivity.sort(
+                  (a, b) => a.spaces - b.spaces
+                );
+                break;
             }
             // Sort the afterSchoolActivity array by the "subject" property in ascending order
-            this.afterSchoolActivity = this.afterSchoolActivity.sort((a, b) =>
-              a.subject.localeCompare(b.subject)
-            );
 
             // this.homes.sort((current,next)=>{ return current.city.localeCompare(next.city)});
           },
