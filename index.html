@@ -11,10 +11,49 @@
       <div v-show="showDiv">This div tag can be hidden</div>
       <p>{{message}}</p>
 
-      <button>Sort by Location</button>
+      <!-- <button v-on:click="sortLessons()">Sort by Location</button> -->
+      <input
+        type="radio"
+        name="sort"
+        value="subject"
+        v-model="picked"
+        v-on:change="sortLessons(picked)"
+      />
+      Subject<br />
+      <input
+        type="radio"
+        name="sort"
+        value="location"
+        v-model="picked"
+        v-on:change="sortLessons(picked)"
+      />
+      Location<br />
+      <input
+        type="radio"
+        name="sort"
+        value="price"
+        v-model="picked"
+        v-on:change="sortLessons(picked)"
+      />
+      Price<br />
+      <input
+        type="radio"
+        name="sort"
+        value="spaces"
+        v-model="picked"
+        v-on:change="sortLessons(picked)"
+      />
+      Space Available
       <div>
         <p>{{cart.length}}</p>
       </div>
+
+      {{selected}}
+      <select v-model="selected" v-on:change="orderLesson()">
+        <option disabled value="">Please select</option>
+        <option :disabled="initialRender">Ascending</option>
+        <option>Descending</option>
+      </select>
       <div class="activities">
         <div v-for="x in afterSchoolActivity">
           <p>Subject: {{x.subject}}</p>
@@ -34,7 +73,7 @@
       <h2>This is the cart section</h2>
 
       <div class="activities">
-        <div v-for="x in cart">
+        <div v-for="x in cart" v-show="x.availableSpace > 0">
           <p>Subject: {{x.subject}}</p>
           <p>Location: {{x.location}}</p>
           <p>Price: £ {{x.price}}</p>
@@ -46,14 +85,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- <script src="./data/lessons.js"></script> -->
-    <script>
-      // import afterSchoolActivity from './data/lessons.js'
+    <script >
+      // import afterSchoolActivity from './data/lessons.js
+      // import json from './data/lessons.json';
       const app = new Vue({
         el: "#app",
         data: {
           message: "Hello Vue!",
           showDiv: false,
           showButton: true,
+          initialRender: true,
+          picked: "",
+          selected: "",
           afterSchoolActivity: [
             {
               id: 1,
@@ -139,7 +182,7 @@
             //   }
             // });
             // lesson.availableSpace++;
-
+              // console.log(json)
             if (lesson.availableSpace > 0) {
               lesson.availableSpace++;
             } else {
@@ -170,8 +213,35 @@
             // }
             // lesson.availableSpace++;
 
-           
+            this.afterSchoolActivity.map((element) => {
+              if (lesson.id == element.id) {
+                lesson.spaces++;
+                lesson.availableSpace--;
+              }
+            });
+
+            // if(lesson.availableSpace == 0){
+            this.cart = this.cart.filter(
+              (element) => element.availableSpace != 0
+            );
+            // }
             // lesson.spaces--;
+          },
+          sortLessons(selected) {
+            console.log(selected);
+            switch(selected){
+              // case "subject":app
+            }
+            // Sort the afterSchoolActivity array by the "subject" property in ascending order
+            this.afterSchoolActivity = this.afterSchoolActivity.sort((a, b) =>
+              a.subject.localeCompare(b.subject)
+            );
+
+            // this.homes.sort((current,next)=>{ return current.city.localeCompare(next.city)});
+          },
+          orderLesson() {
+            this.initialRender = false;
+            this.afterSchoolActivity.reverse();
           },
         },
       });
