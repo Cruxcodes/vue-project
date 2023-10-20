@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body>
@@ -47,7 +54,11 @@
         Space Available
       </div>
 
-      <div>
+      <div v-on:click="!show">
+        <i
+          class="fa-solid fa-cart-shopping "
+          style="color: #407807"
+        ></i>
         <p>{{cart.length}}</p>
       </div>
 
@@ -57,8 +68,11 @@
         <option :disabled="initialRender">Ascending</option>
         <option>Descending</option>
       </select>
+
       <div class="activities">
         <div v-for="x in afterSchoolActivity">
+          <!-- <i class="fas fa-table    "></i> -->
+          <i v-bind:class="x.icon"></i>
           <p>Subject: {{x.subject}}</p>
           <p>Location: {{x.location}}</p>
           <p>Price: £ {{x.price}}</p>
@@ -75,18 +89,48 @@
 
       <h2>This is the cart section</h2>
 
-      <div class="activities">
-        <div v-for="x in cart" v-show="x.availableSpace > 0">
-          <p>Subject: {{x.subject}}</p>
-          <p>Location: {{x.location}}</p>
-          <p>Price: £ {{x.price}}</p>
-          <p>Booked Slots: {{x.availableSpace}}</p>
-          <button v-on:click="removeFromCart(x)">Remove from Cart</button>
+      <div class="cart">
+        <div class="activities">
+          <div v-for="x in cart" v-show="x.availableSpace > 0">
+            <i v-bind:class="x.icon"></i>
+            <p>Subject: {{x.subject}}</p>
+            <p>Location: {{x.location}}</p>
+            <p>Price: £ {{x.price}}</p>
+            <p>Booked Slots: {{x.availableSpace}}</p>
+            <button v-on:click="removeFromCart(x)">Remove from Cart</button>
+          </div>
+        </div>
+        <div class="checkout">
+          <h3>Checkout</h3>
+          <form>
+            <div>
+              <label for="name">Name:</label>
+              <input type="text" v-model="name" />
+            </div>
+            <div>
+              <label for="name">Phone:</label>
+              <input type="tel" v-model="phoneNumber" />
+              {{isNameandNumberValid}}
+            </div>
+            <button
+              type="submit"
+              :disabled="!isNameandNumberValid"
+              v-on:click="checkout"
+            >
+              Checkout
+            </button>
+          </form>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/fontawesome.min.js"
+      integrity="sha512-64O4TSvYybbO2u06YzKDmZfLj/Tcr9+oorWhxzE3yDnmBRf7wvDgQweCzUf5pm2xYTgHMMyk5tW8kWU92JENng=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <!-- <script src="./data/lessons.js"></script> -->
     <script>
       // import afterSchoolActivity from './data/lessons.js
@@ -96,13 +140,17 @@
         data: {
           message: "Hello Vue!",
           showDiv: false,
+          showCart: false,
           showButton: true,
           initialRender: true,
+          name: "",
+          phoneNumber: "",
           picked: "",
           selected: "",
           afterSchoolActivity: [
             {
               id: 1,
+              icon: "fa-solid fa-pencil",
               subject: "Maths",
               location: "London",
               price: 100,
@@ -111,6 +159,7 @@
             },
             {
               id: 2,
+              icon: "fas fa-table",
               subject: "English",
               location: "London",
               price: 100,
@@ -127,6 +176,7 @@
             },
             {
               id: 4,
+              icon: "fas fa-table",
               subject: "Geography",
               location: "Birminghem",
               price: 90,
@@ -135,6 +185,7 @@
             },
             {
               id: 5,
+              icon: "fas fa-table",
               subject: "Orange",
               location: "Manchester",
               price: 100,
@@ -146,6 +197,17 @@
           //   p1.price < p2.price ? 1 : p1.price > p2.price ? -1 : 0
           // ),
           cart: [],
+        },
+        computed: {
+          isNameandNumberValid() {
+            const namePattern = /^[a-zA-Z ]+$/;
+            const phoneNumberTest =
+              /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+            return (
+              namePattern.test(this.name) &&
+              phoneNumberTest.test(this.phoneNumber)
+            );
+          },
         },
         methods: {
           addToCart(lesson, type) {
@@ -231,7 +293,9 @@
             // lesson.spaces--;
           },
           sortLessons(selected) {
-            console.log(selected);
+            this.selected = "";
+            this.initialRender = true;
+
             switch (selected) {
               case "subject":
                 this.afterSchoolActivity = this.afterSchoolActivity.sort(
@@ -249,7 +313,6 @@
                 );
                 break;
               case "spaces":
-                console.log("his");
                 this.afterSchoolActivity = this.afterSchoolActivity.sort(
                   (a, b) => a.spaces - b.spaces
                 );
@@ -263,8 +326,14 @@
             this.initialRender = false;
             this.afterSchoolActivity.reverse();
           },
+          checkout() {
+            alert(`Dear ${this.name} your order has been submitted`);
+          },
         },
       });
     </script>
   </body>
 </html>
+
+//Todo : display list of lessons B
+//Do we have to sort the cart Too
