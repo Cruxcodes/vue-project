@@ -54,11 +54,8 @@
         Space Available
       </div>
 
-      <div v-on:click="!show">
-        <i
-          class="fa-solid fa-cart-shopping "
-          style="color: #407807"
-        ></i>
+      <div v-on:click="showCart =  !showCart">
+        <i class="fa-solid fa-cart-shopping" style="color: #407807"></i>
         <p>{{cart.length}}</p>
       </div>
 
@@ -69,27 +66,28 @@
         <option>Descending</option>
       </select>
 
-      <div class="activities">
-        <div v-for="x in afterSchoolActivity">
-          <!-- <i class="fas fa-table    "></i> -->
-          <i v-bind:class="x.icon"></i>
-          <p>Subject: {{x.subject}}</p>
-          <p>Location: {{x.location}}</p>
-          <p>Price: £ {{x.price}}</p>
-          <p>Spaces: {{x.spaces}}</p>
-          <!-- v-show="x.spaces > 0"  -->
-          <button
-            v-bind:disabled="x.spaces <= 0"
-            v-on:click="addToCart(x,true)"
-          >
-            Add to Cart
-          </button>
+      <div class="lessons" v-if="!showCart">
+        <div class="activities">
+          <div v-for="x in afterSchoolActivity">
+            <!-- <i class="fas fa-table    "></i> -->
+            <i v-bind:class="x.icon"></i>
+            <p>Subject: {{x.subject}}</p>
+            <p>Location: {{x.location}}</p>
+            <p>Price: £ {{x.price}}</p>
+            <p>Spaces: {{x.spaces}}</p>
+            <!-- v-show="x.spaces > 0"  -->
+            <button
+              v-bind:disabled="x.spaces <= 0"
+              v-on:click="addToCart(x,true)"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
 
-      <h2>This is the cart section</h2>
-
-      <div class="cart">
+      <div class="cart" v-else>
+        <h2>This is the cart section</h2>
         <div class="activities">
           <div v-for="x in cart" v-show="x.availableSpace > 0">
             <i v-bind:class="x.icon"></i>
@@ -131,10 +129,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+
     <!-- <script src="./data/lessons.js"></script> -->
-    <script>
-      // import afterSchoolActivity from './data/lessons.js
-      // import json from './data/lessons.json';
+    <script type="module">
+      import lessons from "./data/lessons.js";
       const app = new Vue({
         el: "#app",
         data: {
@@ -147,52 +145,53 @@
           phoneNumber: "",
           picked: "",
           selected: "",
-          afterSchoolActivity: [
-            {
-              id: 1,
-              icon: "fa-solid fa-pencil",
-              subject: "Maths",
-              location: "London",
-              price: 100,
-              spaces: 5,
-              availableSpace: 0,
-            },
-            {
-              id: 2,
-              icon: "fas fa-table",
-              subject: "English",
-              location: "London",
-              price: 100,
-              spaces: 5,
-              availableSpace: 0,
-            },
-            {
-              id: 3,
-              subject: "Physics",
-              location: "London",
-              price: 100,
-              spaces: 5,
-              availableSpace: 0,
-            },
-            {
-              id: 4,
-              icon: "fas fa-table",
-              subject: "Geography",
-              location: "Birminghem",
-              price: 90,
-              spaces: 5,
-              availableSpace: 0,
-            },
-            {
-              id: 5,
-              icon: "fas fa-table",
-              subject: "Orange",
-              location: "Manchester",
-              price: 100,
-              spaces: 4,
-              availableSpace: 0,
-            },
-          ],
+          afterSchoolActivity: lessons,
+          // afterSchoolActivity: [
+          //   {
+          //     id: 1,
+          //     icon: "fa-solid fa-pencil",
+          //     subject: "Maths",
+          //     location: "London",
+          //     price: 100,
+          //     spaces: 5,
+          //     availableSpace: 0,
+          //   },
+          //   {
+          //     id: 2,
+          //     icon: "fas fa-table",
+          //     subject: "English",
+          //     location: "London",
+          //     price: 100,
+          //     spaces: 5,
+          //     availableSpace: 0,
+          //   },
+          //   {
+          //     id: 3,
+          //     subject: "Physics",
+          //     location: "London",
+          //     price: 100,
+          //     spaces: 5,
+          //     availableSpace: 0,
+          //   },
+          //   {
+          //     id: 4,
+          //     icon: "fas fa-table",
+          //     subject: "Geography",
+          //     location: "Birminghem",
+          //     price: 90,
+          //     spaces: 5,
+          //     availableSpace: 0,
+          //   },
+          //   {
+          //     id: 5,
+          //     icon: "fas fa-table",
+          //     subject: "Orange",
+          //     location: "Manchester",
+          //     price: 100,
+          //     spaces: 4,
+          //     availableSpace: 0,
+          //   },
+          // ],
           // sortedProducts: this.afterSchoolActivity.sort((p1, p2) =>
           //   p1.price < p2.price ? 1 : p1.price > p2.price ? -1 : 0
           // ),
@@ -335,5 +334,4 @@
   </body>
 </html>
 
-//Todo : display list of lessons B
-//Do we have to sort the cart Too
+//Todo : display list of lessons B //Do we have to sort the cart Too
