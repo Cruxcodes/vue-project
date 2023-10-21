@@ -18,6 +18,11 @@
       <div v-show="showDiv">This div tag can be hidden</div>
       <p>{{message}}</p>
 
+      <!-- This is the search bar -->
+      <div class="search">
+        <input type="text" v-model="searchedItem" />
+        {{searchedItem}}
+      </div>
       <!-- <button v-on:click="sortLessons()">Sort by Location</button> -->
       <div class="sortby">
         <input
@@ -68,7 +73,7 @@
 
       <div class="lessons" v-if="!showCart">
         <div class="activities">
-          <div v-for="x in afterSchoolActivity">
+          <div v-for="x in filteredList">
             <!-- <i class="fas fa-table    "></i> -->
             <i v-bind:class="x.icon"></i>
             <p>Subject: {{x.subject}}</p>
@@ -139,62 +144,14 @@
           message: "Hello Vue!",
           showDiv: false,
           showCart: false,
-          showButton: true,
+          showSearch: true,
+          searchedItem: "",
           initialRender: true,
           name: "",
           phoneNumber: "",
           picked: "",
           selected: "",
           afterSchoolActivity: lessons,
-          // afterSchoolActivity: [
-          //   {
-          //     id: 1,
-          //     icon: "fa-solid fa-pencil",
-          //     subject: "Maths",
-          //     location: "London",
-          //     price: 100,
-          //     spaces: 5,
-          //     availableSpace: 0,
-          //   },
-          //   {
-          //     id: 2,
-          //     icon: "fas fa-table",
-          //     subject: "English",
-          //     location: "London",
-          //     price: 100,
-          //     spaces: 5,
-          //     availableSpace: 0,
-          //   },
-          //   {
-          //     id: 3,
-          //     subject: "Physics",
-          //     location: "London",
-          //     price: 100,
-          //     spaces: 5,
-          //     availableSpace: 0,
-          //   },
-          //   {
-          //     id: 4,
-          //     icon: "fas fa-table",
-          //     subject: "Geography",
-          //     location: "Birminghem",
-          //     price: 90,
-          //     spaces: 5,
-          //     availableSpace: 0,
-          //   },
-          //   {
-          //     id: 5,
-          //     icon: "fas fa-table",
-          //     subject: "Orange",
-          //     location: "Manchester",
-          //     price: 100,
-          //     spaces: 4,
-          //     availableSpace: 0,
-          //   },
-          // ],
-          // sortedProducts: this.afterSchoolActivity.sort((p1, p2) =>
-          //   p1.price < p2.price ? 1 : p1.price > p2.price ? -1 : 0
-          // ),
           cart: [],
         },
         computed: {
@@ -207,76 +164,32 @@
               phoneNumberTest.test(this.phoneNumber)
             );
           },
+          filteredList() {
+            return this.afterSchoolActivity.filter((lesson) => {
+              return (
+                lesson.subject
+                  .toLowerCase()
+                  .includes(this.searchedItem.toLowerCase()) ||
+                lesson.location
+                  .toLowerCase()
+                  .includes(this.searchedItem.toLowerCase())
+              );
+            });
+          },
         },
         methods: {
           addToCart(lesson, type) {
-            // console.log(sortedProducts);
-            // if (this.cart.length == 0) {
-            //   this.cart.push(lesson);
-            //   // console.log("this is badd");
-            // } else {
-            //   for (let i = 0; i < this.cart.length; i++) {
-            //     // console.log(this.cart[i].id);
-            //     // if (i <= this.cart.length - 1) {
-            //     // console.log(this.cart.length);
-            //     if (this.cart[i].id == lesson.id) {
-            //       //   this.cart[i].spaces++;
-            //       console.log("test " + this.cart[i].id);
-            //       // if (type) {
-            //       //   this.cart[i].spaces++;
-            //       // }
-            //       ++this.cart[i].spaces;
-            //       break;
-
-            //       // console.log(lesson.id);
-            //       // console.log(this.cart[i].spaces);
-            //     } else {
-            //       // if it is not it still adds this to the instances where it isn't correct
-            //       this.cart.push(lesson);
-            //     }
-            //     // }
-            //     // continue;
-
-            //   }
-            // this.cart.map((element, index) => {
-            //   if (element.id == lesson.id) {
-            //     console.log(lesson.id + " " + element.id);
-            //     console.log(element);
-            //     element.spaces += 1;
-            //   }
-            // });
-            // lesson.availableSpace++;
-            // console.log(json)
             if (lesson.availableSpace > 0) {
               lesson.availableSpace++;
             } else {
               lesson.availableSpace++;
               this.cart.push(lesson);
             }
-            // lesson.availableSpace++;
 
             lesson.spaces--;
-            // this.checkEntry();
-            // }
-            // if (type) {
-            //   // console.log(type);
-            //   --lesson.spaces;
-            // } else {
-            //   console.log("this is a test");
-            // }
           },
-          // checkEntry(lesson){
-          //  return lesson.id == this.cart.
-          // }
-          removeFromCart(lesson) {
-            // if (lesson.availableSpace > 0) {
-            //   lesson.availableSpace++;
-            // } else {
-            //   lesson.availableSpace++;
-            //   this.cart.push(lesson);
-            // }
-            // lesson.availableSpace++;
 
+          removeFromCart(lesson) {
             this.afterSchoolActivity.map((element) => {
               if (lesson.id == element.id) {
                 lesson.spaces++;
@@ -288,8 +201,6 @@
             this.cart = this.cart.filter(
               (element) => element.availableSpace != 0
             );
-            // }
-            // lesson.spaces--;
           },
           sortLessons(selected) {
             this.selected = "";
@@ -327,6 +238,15 @@
           },
           checkout() {
             alert(`Dear ${this.name} your order has been submitted`);
+          },
+          searchLessons() {
+            this.afterSchoolActivity = this.afterSchoolActivity.filter(
+              (lesson) => {
+                return lesson.subject
+                  .toLowerCase()
+                  .includes(this.searchedItem.toLowerCase());
+              }
+            );
           },
         },
       });
