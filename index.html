@@ -15,72 +15,93 @@
   </head>
   <body>
     <div id="app">
-      <div v-show="showDiv">This div tag can be hidden</div>
-      <p>{{message}}</p>
+      <header>
+        <h2>AfterLessons</h2>
 
-      <!-- This is the search bar -->
-      <div class="search">
-        <input type="text" v-model="searchedItem" />
-        {{searchedItem}}
-      </div>
+        <!-- This is the search bar -->
+        <div>
+          <div class="search">
+            <input type="text" v-model="searchedItem" />
+          </div>
+
+          <div v-on:click="showCart = !showCart" class="cartIcon">
+            <i class="fa-solid fa-cart-shopping" style="color: #9b9d9f"></i>
+            <div>
+              <p>{{cart.length}}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <!-- <button v-on:click="sortLessons()">Sort by Location</button> -->
-      <div class="sortby">
-        <input
-          type="radio"
-          name="sort"
-          value="subject"
-          v-model="picked"
-          v-on:change="sortLessons(picked)"
-        />
-        Subject<br />
-        <input
-          type="radio"
-          name="sort"
-          value="location"
-          v-model="picked"
-          v-on:change="sortLessons(picked)"
-        />
-        Location<br />
-        <input
-          type="radio"
-          name="sort"
-          value="price"
-          v-model="picked"
-          v-on:change="sortLessons(picked)"
-        />
-        Price<br />
-        <input
-          type="radio"
-          name="sort"
-          value="spaces"
-          v-model="picked"
-          v-on:change="sortLessons(picked)"
-        />
-        Space Available
-      </div>
+      <h3 v-show="!showCart">Sort Lessons by:</h3>
 
-      <div v-on:click="showCart =  !showCart">
-        <i class="fa-solid fa-cart-shopping" style="color: #407807"></i>
-        <p>{{cart.length}}</p>
+      <div class="sort" v-show="!showCart">
+        <div class="sortby">
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              value="subject"
+              id="subject"
+              v-model="picked"
+              v-on:change="sortLessons(picked)"
+            />
+            <label for="subject">Subject</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              value="location"
+              id="location"
+              v-model="picked"
+              v-on:change="sortLessons(picked)"
+            />
+            <label for="location">Location</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              value="price"
+              id="price"
+              v-model="picked"
+              v-on:change="sortLessons(picked)"
+            />
+            <label for="price">Price</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              value="spaces"
+              id="spaces"
+              v-model="picked"
+              v-on:change="sortLessons(picked)"
+            />
+            <label for="spaces"> Space Available</label>
+          </div>
+        </div>
+        <select
+          v-show="showSortOrder"
+          v-model="selected"
+          v-on:change="orderLesson()"
+        >
+          <option disabled value="">Select Order</option>
+          <option :disabled="initialRender">Ascending</option>
+          <option>Descending</option>
+        </select>
       </div>
-
-      {{selected}}
-      <select v-model="selected" v-on:change="orderLesson()">
-        <option disabled value="">Please select</option>
-        <option :disabled="initialRender">Ascending</option>
-        <option>Descending</option>
-      </select>
 
       <div class="lessons" v-if="!showCart">
         <div class="activities">
           <div v-for="x in filteredList">
-            <!-- <i class="fas fa-table    "></i> -->
             <i v-bind:class="x.icon"></i>
             <p>Subject: {{x.subject}}</p>
             <p>Location: {{x.location}}</p>
             <p>Price: £ {{x.price}}</p>
             <p>Spaces: {{x.spaces}}</p>
-            <!-- v-show="x.spaces > 0"  -->
             <button
               v-bind:disabled="x.spaces <= 0"
               v-on:click="addToCart(x,true)"
@@ -99,22 +120,25 @@
             <p>Subject: {{x.subject}}</p>
             <p>Location: {{x.location}}</p>
             <p>Price: £ {{x.price}}</p>
+            <p>Price: £ {{x.price}}</p>
             <p>Booked Slots: {{x.availableSpace}}</p>
             <button v-on:click="removeFromCart(x)">Remove from Cart</button>
           </div>
         </div>
-        <div class="checkout">
+        <div class="checkout" v-show="cart.length > 0">
           <h3>Checkout</h3>
           <form>
             <div>
-              <label for="name">Name:</label>
-              <input type="text" v-model="name" />
+              <div>
+                <label for="name">Name:</label>
+                <input type="text" v-model="name" />
+              </div>
+              <div>
+                <label for="name">Phone:</label>
+                <input type="tel" v-model="phoneNumber" />
+              </div>
             </div>
-            <div>
-              <label for="name">Phone:</label>
-              <input type="tel" v-model="phoneNumber" />
-              {{isNameandNumberValid}}
-            </div>
+
             <button
               type="submit"
               :disabled="!isNameandNumberValid"
@@ -123,6 +147,9 @@
               Checkout
             </button>
           </form>
+        </div>
+        <div class="noItem" v-show="cart.length <= 0">
+          <p>Your cart is empty</p>
         </div>
       </div>
     </div>
@@ -145,6 +172,7 @@
           showDiv: false,
           showCart: false,
           showSearch: true,
+          showSortOrder: false,
           searchedItem: "",
           initialRender: true,
           name: "",
@@ -205,6 +233,7 @@
           sortLessons(selected) {
             this.selected = "";
             this.initialRender = true;
+            this.showSortOrder = true;
 
             switch (selected) {
               case "subject":
@@ -228,9 +257,6 @@
                 );
                 break;
             }
-            // Sort the afterSchoolActivity array by the "subject" property in ascending order
-
-            // this.homes.sort((current,next)=>{ return current.city.localeCompare(next.city)});
           },
           orderLesson() {
             this.initialRender = false;
@@ -239,19 +265,10 @@
           checkout() {
             alert(`Dear ${this.name} your order has been submitted`);
           },
-          searchLessons() {
-            this.afterSchoolActivity = this.afterSchoolActivity.filter(
-              (lesson) => {
-                return lesson.subject
-                  .toLowerCase()
-                  .includes(this.searchedItem.toLowerCase());
-              }
-            );
-          },
+
+          // },
         },
       });
     </script>
   </body>
 </html>
-
-//Todo : display list of lessons B //Do we have to sort the cart Too
