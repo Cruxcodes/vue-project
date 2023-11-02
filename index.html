@@ -24,12 +24,15 @@
             <input type="text" v-model="searchedItem" />
           </div>
 
-          <div v-on:click="showCart = !showCart" class="cartIcon">
-            <i class="fa-solid fa-cart-shopping" style="color: #9b9d9f"></i>
-            <div>
-              <p>{{cart.length}}</p>
+          <button style="border-radius: 30px;border: 1px solid gray;">
+            <div v-on:click="showCart = !showCart" class="cartIcon">
+              <i class="fa-solid fa-cart-shopping" style="color: #9b9d9f; margin-right: 10px;"></i>
+              <div>
+                <p>{{cart.length}}</p>
+              </div>
+              Go to Cart
             </div>
-          </div>
+          </button>
         </div>
       </header>
 
