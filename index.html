@@ -20,13 +20,16 @@
 
         <!-- This is the search bar -->
         <div>
-          <div class="search">
+          <div class="search" v-show="!showCart" st>
             <input type="text" v-model="searchedItem" />
           </div>
 
-          <button style="border-radius: 30px;border: 1px solid gray;">
+          <button style="border-radius: 30px; border: 1px solid gray">
             <div v-on:click="showCart = !showCart" class="cartIcon">
-              <i class="fa-solid fa-cart-shopping" style="color: #9b9d9f; margin-right: 10px;"></i>
+              <i
+                class="fa-solid fa-cart-shopping"
+                style="color: #9b9d9f; margin-right: 10px"
+              ></i>
               <div>
                 <p>{{cart.length}}</p>
               </div>
@@ -36,9 +39,8 @@
         </div>
       </header>
 
-      <!-- <button v-on:click="sortLessons()">Sort by Location</button> -->
+      <!-- Sort -->
       <h3 v-show="!showCart">Sort Lessons by:</h3>
-
       <div class="sort" v-show="!showCart">
         <div class="sortby">
           <div>
@@ -96,6 +98,7 @@
           <option>Descending</option>
         </select>
       </div>
+      <!-- End of sort -->
 
       <div class="lessons" v-if="!showCart">
         <div class="activities">
@@ -165,16 +168,13 @@
       referrerpolicy="no-referrer"
     ></script>
 
-    <!-- <script src="./data/lessons.js"></script> -->
     <script type="module">
       import lessons from "./data/lessons.js";
       const app = new Vue({
         el: "#app",
         data: {
-          message: "Hello Vue!",
-          showDiv: false,
           showCart: false,
-          showSearch: true,
+          // showSearch: true,
           showSortOrder: false,
           searchedItem: "",
           initialRender: true,
@@ -216,7 +216,6 @@
               lesson.availableSpace++;
               this.cart.push(lesson);
             }
-
             lesson.spaces--;
           },
 
@@ -227,8 +226,6 @@
                 lesson.availableSpace--;
               }
             });
-
-            // if(lesson.availableSpace == 0){
             this.cart = this.cart.filter(
               (element) => element.availableSpace != 0
             );
