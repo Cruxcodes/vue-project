@@ -100,38 +100,47 @@
       </div>
       <!-- End of sort -->
 
+      <!-- Beginning of lessons available -->
       <div class="lessons" v-if="!showCart">
         <div class="activities">
-          <div v-for="x in filteredList">
-            <i v-bind:class="x.icon"></i>
-            <p>Subject: {{x.subject}}</p>
-            <p>Location: {{x.location}}</p>
-            <p>Price: £ {{x.price}}</p>
-            <p>Spaces: {{x.spaces}}</p>
+          <div v-for="activity in filteredList">
+            <i v-bind:class="activity.icon"></i>
+            <p>Subject: {{activity.subject}}</p>
+            <p>Location: {{activity.location}}</p>
+            <p>Price: £ {{activity.price}}</p>
+            <p>Spaces: {{activity.spaces}}</p>
             <button
-              v-bind:disabled="x.spaces <= 0"
-              v-on:click="addToCart(x,true)"
+              v-bind:disabled="activity.spaces <= 0"
+              v-on:click="addToCart(activity,true)"
             >
               Add to Cart
             </button>
           </div>
         </div>
       </div>
+      <!-- End of lessons -->
 
+      <!-- This is for the cart section -->
       <div class="cart" v-else>
-        <h2>This is the cart section</h2>
+        <p>This is the cart section</p>
         <div class="activities">
-          <div v-for="x in cart" v-show="x.availableSpace > 0">
-            <i v-bind:class="x.icon"></i>
-            <p>Subject: {{x.subject}}</p>
-            <p>Location: {{x.location}}</p>
-            <p>Price: £ {{x.price}}</p>
-            <p>Price: £ {{x.price}}</p>
-            <p>Booked Slots: {{x.availableSpace}}</p>
-            <button v-on:click="removeFromCart(x)">Remove from Cart</button>
+          <div v-for="activity in cart" v-show="activity.availableSpace > 0">
+            <i v-bind:class="activity.icon"></i>
+            <p>Subject: {{activity.subject}}</p>
+            <p>Location: {{activity.location}}</p>
+            <p>Price: £ {{activity.price}}</p>
+            <p>Price: £ {{activity.price}}</p>
+            <p>Booked Slots: {{activity.availableSpace}}</p>
+            <button v-on:click="removeFromCart(activity)">
+              Remove from Cart
+            </button>
           </div>
         </div>
-        <div class="checkout" v-show="cart.length > 0">
+        <div class="totalincart">
+          <h3>Cart Total: £ {{totalInCart}}</h3>
+        </div>
+
+        <div class="checkout" style="margin-top: 20px" v-show="cart.length > 0">
           <h3>Checkout</h3>
           <form>
             <div>
@@ -158,6 +167,7 @@
           <p>Your cart is empty</p>
         </div>
       </div>
+      <!-- End of cart section -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -174,7 +184,6 @@
         el: "#app",
         data: {
           showCart: false,
-          // showSearch: true,
           showSortOrder: false,
           searchedItem: "",
           initialRender: true,
@@ -194,6 +203,15 @@
               namePattern.test(this.name) &&
               phoneNumberTest.test(this.phoneNumber)
             );
+          },
+          totalInCart() {
+            let total = 0;
+            for (let index = 0; index < this.cart.length; index++) {
+              let value =
+                this.cart[index].price * this.cart[index].availableSpace;
+              total += value;
+            }
+            return total;
           },
           filteredList() {
             return this.afterSchoolActivity.filter((lesson) => {
@@ -234,7 +252,6 @@
             this.selected = "";
             this.initialRender = true;
             this.showSortOrder = true;
-
             switch (selected) {
               case "subject":
                 this.afterSchoolActivity = this.afterSchoolActivity.sort(

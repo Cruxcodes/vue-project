@@ -91,5 +91,4 @@ const lessons = [
   },
 ];
 
-// export default afterSchoolActivity;
 export default lessons;
