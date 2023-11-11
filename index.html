@@ -12,6 +12,8 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="./styles/index.css" />
+    <script src="./data/lessons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   </head>
   <body>
     <div id="app">
@@ -170,7 +172,6 @@
       <!-- End of cart section -->
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/fontawesome.min.js"
       integrity="sha512-64O4TSvYybbO2u06YzKDmZfLj/Tcr9+oorWhxzE3yDnmBRf7wvDgQweCzUf5pm2xYTgHMMyk5tW8kWU92JENng=="
@@ -178,8 +179,7 @@
       referrerpolicy="no-referrer"
     ></script>
 
-    <script type="module">
-      import lessons from "./data/lessons.js";
+    <script>
       const app = new Vue({
         el: "#app",
         data: {
@@ -280,10 +280,10 @@
             this.afterSchoolActivity.reverse();
           },
           checkout() {
-            alert(`Dear ${this.name} your order has been submitted`);
+            alert(
+              `Dear ${this.name} your order has been submitted. You shall be contacted on ${this.phoneNumber}`
+            );
           },
-
-          // },
         },
       });
     </script>
