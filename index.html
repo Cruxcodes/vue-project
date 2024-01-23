@@ -103,6 +103,25 @@
       <!-- End of sort -->
 
       <!-- Beginning of lessons available -->
+      <!-- <div class="lessons" v-if="!showCart">
+        <div class="activities">
+          <div v-for="activity in filteredList">
+            <i v-bind:class="activity.icon"></i>
+            <p>Subject: {{activity.subject}}</p>
+            <p>Location: {{activity.location}}</p>
+            <p>Price: £ {{activity.price}}</p>
+            <p>Spaces: {{activity.spaces}}</p>
+            <button
+              v-bind:disabled="activity.spaces <= 0"
+              v-on:click="addToCart(activity,true)"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div> -->
+      <!-- End of lessons -->
+
       <div class="lessons" v-if="!showCart">
         <div class="activities">
           <div v-for="activity in filteredList">
@@ -120,8 +139,6 @@
           </div>
         </div>
       </div>
-      <!-- End of lessons -->
-
       <!-- This is for the cart section -->
       <div class="cart" v-else>
         <p>This is the cart section</p>
@@ -191,6 +208,7 @@
           phoneNumber: "",
           picked: "",
           selected: "",
+          fetchedList: [],
           afterSchoolActivity: lessons,
           cart: [],
         },
@@ -225,6 +243,9 @@
               );
             });
           },
+        },
+        created() {
+          this.getLessons();
         },
         methods: {
           addToCart(lesson, type) {
@@ -275,14 +296,105 @@
                 break;
             }
           },
+          async getLessons() {
+            try {
+              const response = await fetch(
+                `http://localhost:3000/collections/lessons`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              const responseData = await response.json();
+              this.fetchedList = responseData;
+              this.afterSchoolActivity = responseData;
+              return responseData; // Save the data in a component variable
+            } catch (error) {
+              // Handle errors
+              console.error(error);
+            }
+          },
+          async pushOrder() {
+            try {
+              const response = await fetch(
+                `http://localhost:3000/collections/orders`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    // Your data to be updated goes here
+                    name: this.name.toString(),
+                    phoneNumber: this.phoneNumber,
+                    lessons: this.cart.map((item) => {
+                      return {
+                        lesson_id: item._id,
+                        spaceTaken: item.availableSpace,
+                      };
+                    }),
+                  }),
+                }
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              const responseData = await response.json();
+              if (responseData.insertedId != null) {
+                for (i = 0; i < this.cart.length; i++) {
+                  console.log(this.cart[i]);
+                  await this.updateData(this.cart[i]._id, this.cart[i].spaces);
+                }
+              }
+              return responseData;
+            } catch (error) {
+              // Handle errors
+              console.error("Error updating data:", error.message);
+            }
+          },
+          async updateData(entryId, spacesLeft) {
+            try {
+              const response = await fetch(
+                `http://localhost:3000/collections/lessons/${entryId}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    spaces: spacesLeft,
+                  }),
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              const responseData = await response.json();
+              return responseData;
+            } catch (error) {
+              console.error("Error updating data:", error.message);
+            }
+          },
           orderLesson() {
             this.initialRender = false;
             this.afterSchoolActivity.reverse();
           },
-          checkout() {
-            alert(
-              `Dear ${this.name} your order has been submitted. You shall be contacted on ${this.phoneNumber}`
-            );
+          async checkout(e) {
+            e.preventDefault();
+            const result = await this.pushOrder();
+            if (result.insertedId != null) {
+              alert(
+                `Dear ${this.name} your order has been submitted. You shall be contacted on ${this.phoneNumber}`
+              );
+              location.reload(true)
+            } else {
+            }
           },
         },
       });
