@@ -363,7 +363,7 @@
           async searchLessons() {
             try {
               const response = await fetch(
-                `http://localhost:3000/search/collections/lessons?q=${this.searchedItem}`,
+                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/search/collections/lessons?q=${this.searchedItem}`,
                 {
                   method: "GET",
                   headers: {
