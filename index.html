@@ -23,7 +23,11 @@
         <!-- This is the search bar -->
         <div>
           <div class="search" v-show="!showCart" st>
-            <input type="text" v-model="searchedItem" />
+            <input
+              type="text"
+              v-model="searchedItem"
+              v-on:input="searchLessons"
+            />
           </div>
 
           <button style="border-radius: 30px; border: 1px solid gray">
@@ -124,7 +128,7 @@
 
       <div class="lessons" v-if="!showCart">
         <div class="activities">
-          <div v-for="activity in filteredList">
+          <div v-for="activity in afterSchoolActivity">
             <i v-bind:class="activity.icon"></i>
             <p>Subject: {{activity.subject}}</p>
             <p>Location: {{activity.location}}</p>
@@ -208,8 +212,7 @@
           phoneNumber: "",
           picked: "",
           selected: "",
-          fetchedList: [],
-          afterSchoolActivity: lessons,
+          afterSchoolActivity: [],
           cart: [],
         },
         computed: {
@@ -299,7 +302,7 @@
           async getLessons() {
             try {
               const response = await fetch(
-                `http://localhost:3000/collections/lessons`,
+                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/lessons`,
                 {
                   method: "GET",
                   headers: {
@@ -311,7 +314,7 @@
                 throw new Error(`HTTP error! Status: ${response.status}`);
               }
               const responseData = await response.json();
-              this.fetchedList = responseData;
+              console.log(responseData);
               this.afterSchoolActivity = responseData;
               return responseData; // Save the data in a component variable
             } catch (error) {
@@ -322,7 +325,7 @@
           async pushOrder() {
             try {
               const response = await fetch(
-                `http://localhost:3000/collections/orders`,
+                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/orders`,
                 {
                   method: "POST",
                   headers: {
@@ -347,7 +350,7 @@
               const responseData = await response.json();
               if (responseData.insertedId != null) {
                 for (i = 0; i < this.cart.length; i++) {
-                  console.log(this.cart[i]);
+                  console.log(this.cart[i]._id);
                   await this.updateData(this.cart[i]._id, this.cart[i].spaces);
                 }
               }
@@ -357,10 +360,32 @@
               console.error("Error updating data:", error.message);
             }
           },
+          async searchLessons() {
+            try {
+              const response = await fetch(
+                `http://localhost:3000/search/collections/lessons?q=${this.searchedItem}`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              const responseData = await response.json();
+              this.afterSchoolActivity = responseData;
+              return responseData; // Save the data in a component variable
+            } catch (error) {
+              // Handle errors
+              console.error(error);
+            }
+          },
           async updateData(entryId, spacesLeft) {
             try {
               const response = await fetch(
-                `http://localhost:3000/collections/lessons/${entryId}`,
+                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/lessons/${entryId}`,
                 {
                   method: "PUT",
                   headers: {
@@ -392,7 +417,7 @@
               alert(
                 `Dear ${this.name} your order has been submitted. You shall be contacted on ${this.phoneNumber}`
               );
-              location.reload(true)
+              location.reload(true);
             } else {
             }
           },
