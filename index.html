@@ -302,7 +302,7 @@
           async getLessons() {
             try {
               const response = await fetch(
-                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/lessons`,
+                `https://vueproject-env.eba-2ewpm3t7.eu-west-2.elasticbeanstalk.com/collections/lessons`,
                 {
                   method: "GET",
                   headers: {
@@ -314,7 +314,6 @@
                 throw new Error(`HTTP error! Status: ${response.status}`);
               }
               const responseData = await response.json();
-              console.log(responseData);
               this.afterSchoolActivity = responseData;
               return responseData; // Save the data in a component variable
             } catch (error) {
@@ -325,7 +324,7 @@
           async pushOrder() {
             try {
               const response = await fetch(
-                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/orders`,
+                `https://vueproject-env.eba-2ewpm3t7.eu-west-2.elasticbeanstalk.com/collections/orders`,
                 {
                   method: "POST",
                   headers: {
@@ -363,7 +362,7 @@
           async searchLessons() {
             try {
               const response = await fetch(
-                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/search/collections/lessons?q=${this.searchedItem}`,
+                `https://vueproject-env.eba-2ewpm3t7.eu-west-2.elasticbeanstalk.com/search/collections/lessons?q=${this.searchedItem}`,
                 {
                   method: "GET",
                   headers: {
@@ -385,7 +384,7 @@
           async updateData(entryId, spacesLeft) {
             try {
               const response = await fetch(
-                `http://cst3145-env.eba-s5bibdnn.us-east-1.elasticbeanstalk.com/collections/lessons/${entryId}`,
+                `https://vueproject-env.eba-2ewpm3t7.eu-west-2.elasticbeanstalk.com/collections/lessons/${entryId}`,
                 {
                   method: "PUT",
                   headers: {
