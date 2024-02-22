@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./styles/index.css" />
     <script src="./data/lessons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="manifest" href="lessons-app.webmanifest" />
   </head>
   <body>
     <div id="app">
@@ -28,6 +29,15 @@
               v-model="searchedItem"
               v-on:input="searchLessons"
             />
+            <a v-bind:href="serverURL" target="_blank">link</a>
+            <button @click="deleteAllCaches" class="test-elem">
+              <span class="fas fa-trash"></span>
+              Delete All Caches
+            </button>
+            <button @click="unregisterAllServiceWorkers" class="test-elem">
+              <span class="fab fa-uniregistry"></span>
+              Unregister All ServiceWorkers
+            </button>
           </div>
 
           <button style="border-radius: 30px; border: 1px solid gray">
@@ -214,6 +224,8 @@
           selected: "",
           afterSchoolActivity: [],
           cart: [],
+          serverURL:
+            "https://vueproject-env.eba-2ewpm3t7.eu-west-2.elasticbeanstalk.com/collections/lessons",
         },
         computed: {
           isNameandNumberValid() {
@@ -248,6 +260,9 @@
           },
         },
         created() {
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js");
+          }
           this.getLessons();
         },
         methods: {
@@ -259,6 +274,22 @@
               this.cart.push(lesson);
             }
             lesson.spaces--;
+          },
+          unregisterAllServiceWorkers() {
+            navigator.serviceWorker
+              .getRegistrations()
+              .then(function (registrations) {
+                for (let registration of registrations) {
+                  registration.unregister();
+                }
+              });
+            console.log("ServiceWorkers Unregistered");
+          },
+          deleteAllCaches() {
+            caches.keys().then(function (names) {
+              for (let name of names) caches.delete(name);
+            });
+            console.log("All Caches Deleted");
           },
 
           removeFromCart(lesson) {

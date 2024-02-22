@@ -1,0 +1,20 @@
+{
+ "name": "My After School Activity App",
+ "short_name": "Afterschool",
+ "description": "My online extra-activity store",
+ "icons": [
+ {
+ "src": "assets/store-32.png",
+ "sizes": "32x32",
+ "type": "image/png"
+ },
+ {
+ "src": "assets/store-512.png",
+ "sizes": "512x512",
+ "type": "image/png"
+ }
+ ],
+ "start_url": "index.html",
+ "display": "fullscreen",
+ "background_color": "#260bca"
+}
